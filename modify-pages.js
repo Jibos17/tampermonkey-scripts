@@ -1,20 +1,47 @@
 (function () {
   'use strict';
 
-  // 修改页面标题
-  const title = document.querySelector('title');
-  if (title) title.textContent = '这是修改后的标题 ✅';
+  // 等待元素加载工具
+  function waitForElement(selector, callback, interval = 500, timeout = 10000) {
+    const startTime = Date.now();
+    const timer = setInterval(() => {
+      const el = document.querySelector(selector);
+      if (el) {
+        clearInterval(timer);
+        callback(el);
+      } else if (Date.now() - startTime > timeout) {
+        clearInterval(timer);
+      }
+    }, interval);
+  }
 
-  // 修改页面上所有 <h1>
-  document.querySelectorAll('h1').forEach((el) => {
-    el.textContent = '这是我自定义的标题';
-  });
+  // 模拟修改广告数据
+  function modifyAdMetrics() {
+    const replacements = {
+      '展示次数': '999,999',
+      '点击率': '99.99%',
+      '费用': '¥99,999',
+      '平均每千次展示费用': '¥999.99',
+      '点击次数': '999,999',
+      '平均每次点击费用': '¥9.99',
+    };
 
-  // 替换某些链接
-  document.querySelectorAll('a').forEach((el) => {
-    if (el.href.includes('example.com')) {
-      el.href = 'https://your-new-link.com';
-      el.textContent = '跳转到自定义网站';
-    }
-  });
+    Object.keys(replacements).forEach((label) => {
+      // 查找所有包含文本的元素
+      const elements = Array.from(document.querySelectorAll('*')).filter(el => el.textContent.includes(label));
+      elements.forEach(el => {
+        el.textContent = label + ': ' + replacements[label];
+      });
+    });
+  }
+
+  // 页面路径判断（只在 campaign 页执行）
+  if (location.href.includes('/campaigns')) {
+    waitForElement('body', () => {
+      modifyAdMetrics();
+
+      // 设置定时器每 5 秒重试一次（处理 SPA 页面更新）
+      setInterval(modifyAdMetrics, 5000);
+    });
+  }
 })();
