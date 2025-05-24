@@ -5,6 +5,8 @@
 // @description  修改 Google Ads 页面广告指标
 // @author       你自己
 // @match        https://ads.google.com/aw/campaigns*
+// @match        https://ads.google.com/aw/campaigns/*
+// @match        https://ads.google.com/aw/campaigns?*
 // @grant        none
 // ==/UserScript==
 
